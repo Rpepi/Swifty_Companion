@@ -46,3 +46,5 @@ app-example
 
 CLAUDE.md
 .claude/
+
+.vscode/

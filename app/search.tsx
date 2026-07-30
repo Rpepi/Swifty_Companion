@@ -4,7 +4,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { user42Schema } from "@/types/user42";
 import SearchBar from "@/components/SearchBar";
-import ViewProfile from "@/components/ViewProfile";
 import { z } from "zod";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -30,12 +29,10 @@ export default function Index() {
 	const [login, setLogin] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [exist, setExist] = useState(false);
 	const [user42, setUser42] = useState<z.infer<typeof user42Schema> | null>(null);
 
 	async function find_info() {
 		setUser42(null);
-		setExist(false);
 		setError(null);
 		setLoading(true);
 		try {
@@ -56,7 +53,6 @@ export default function Index() {
 			if (response.ok) {
 				const data = user42Schema.parse(await response.json());
 				setUser42(data);
-				setExist(true);
 			} else {
 				if (status === 404) setError("User doesn't exist");
 				else {
@@ -96,7 +92,10 @@ export default function Index() {
 					{error && <Text style={shared.errorText}>{error}</Text>}
 
 					{user42 && (
-						<View style={local.resultCard}>
+						<Pressable
+							style={({ pressed }) => [local.resultCard, pressed && local.resultCardPressed]}
+							onPress={() => router.push(`/profile/${user42.login}`)}
+						>
 							{user42.image?.link && (
 								<Image source={{ uri: user42.image.link }} style={local.avatar} />
 							)}
@@ -107,10 +106,8 @@ export default function Index() {
 								</Text>
 							</View>
 							<Text style={local.chevron}>›</Text>
-						</View>
+						</Pressable>
 					)}
-
-					<ViewProfile exist={exist} user42={user42} />
 				</View>
 			</View>
 		</View>
@@ -177,6 +174,9 @@ function createLocalStyles(colors: ReturnType<typeof useThemeColors>, topInset: 
 			padding: spacing.md,
 			gap: spacing.md,
 			...cardShadow(colors),
+		},
+		resultCardPressed: {
+			opacity: 0.7,
 		},
 		avatar: {
 			width: 60,

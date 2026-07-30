@@ -59,7 +59,9 @@ function SkillBar({
 				<Text style={styles.name} numberOfLines={1}>
 					{name}
 				</Text>
-				<Text style={styles.percent}>{percent.toFixed(0)}%</Text>
+				<Text style={styles.percent}>
+					Lvl {level.toFixed(2)} · {percent.toFixed(0)}%
+				</Text>
 			</View>
 			<View style={styles.track}>
 				<View style={[styles.fill, { width: `${percent}%` }]} />

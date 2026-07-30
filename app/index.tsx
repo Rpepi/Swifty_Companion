@@ -87,8 +87,6 @@ export default function Login() {
 
 	return (
 		<View style={[shared.screen, shared.center]}>
-			<View style={local.glow} pointerEvents="none" />
-
 			<View style={local.mark}>
 				<View style={local.wordmarkRow}>
 					<Text style={local.wordmark}>42</Text>
@@ -108,7 +106,7 @@ export default function Login() {
 				onPress={async () => {
 					try {
 						setLoading(true);
-						await promptAsync();
+						await promptAsync({ preferEphemeralSession: true });
 					} catch {
 						setError("Error while opening browser");
 					} finally {
@@ -130,22 +128,13 @@ export default function Login() {
 
 function createLocalStyles(colors: ReturnType<typeof useThemeColors>) {
 	return StyleSheet.create({
-		glow: {
-			position: "absolute",
-			top: "18%",
-			width: 320,
-			height: 320,
-			borderRadius: radius.pill,
-			backgroundColor: colors.accentSoft,
-			opacity: 0.7,
-		},
 		mark: {
 			alignItems: "center",
 			marginBottom: spacing.xxl,
 		},
 		wordmarkRow: {
-			flexDirection: "row",
-			alignItems: "flex-end",
+			position: "relative",
+			alignItems: "center",
 			marginBottom: spacing.sm,
 		},
 		wordmark: {
@@ -156,10 +145,11 @@ function createLocalStyles(colors: ReturnType<typeof useThemeColors>) {
 			letterSpacing: -1.5,
 		},
 		cursor: {
+			position: "absolute",
+			right: -spacing.md,
+			bottom: 10,
 			width: 10,
 			height: 36,
-			marginLeft: spacing.xs,
-			marginBottom: 10,
 			backgroundColor: colors.accent,
 			borderRadius: 3,
 		},

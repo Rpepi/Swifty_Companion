@@ -17,7 +17,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
 	// Finished projects (validated or failed) first; in-progress ones last,
 	// since they don't have a final outcome to show yet.
 	const sorted = useMemo(() => {
-		const rank = (p: Project) => (p.status === "in_progress" ? 1 : 0);
+		const rank = (p: Project) => (p["validated?"] === null ? 1 : 0);
 		return [...projects].sort((a, b) => rank(a) - rank(b));
 	}, [projects]);
 
@@ -86,13 +86,15 @@ function ProjectRow({
 }
 
 function getBadge(status: string, validated: boolean | null, colors: ThemeColors) {
-	if (status === "in_progress") {
-		return { label: "In progress", solid: colors.warning, soft: colors.warningSoft };
-	}
 	if (validated === true) {
 		return { label: "Success", solid: colors.success, soft: colors.successSoft };
 	}
-	return { label: "Failed", solid: colors.danger, soft: colors.dangerSoft };
+	if (validated === false) {
+		return { label: "Failed", solid: colors.danger, soft: colors.dangerSoft };
+	}
+	// validated is null: not graded yet (in progress, waiting for correction, searching a group, ...)
+	const label = status === "in_progress" ? "In progress" : "Pending";
+	return { label, solid: colors.warning, soft: colors.warningSoft };
 }
 
 function createStyles(colors: ThemeColors) {
