@@ -56,7 +56,7 @@ export default function Index() {
 			} else {
 				if (status === 404) setError("User doesn't exist");
 				else {
-					console.log(response.status, response.body);
+					console.log(response.status, await response.json());
 					setError("server error");
 				}
 			}

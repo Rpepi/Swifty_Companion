@@ -53,7 +53,7 @@ export default function Login() {
 						await SecureStore.setItemAsync("token_oauth", JSON.stringify(token));
 						return true;
 					} else {
-						console.log(response_exchange.status, response_exchange.json());
+						console.log(response_exchange.status, await response_exchange.json());
 						setError("Login failed, please try again.");
 						return false;
 					}
