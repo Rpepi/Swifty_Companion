@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet } from "react-native";
 import { useMemo } from "react";
-import { cardShadow, fonts, glowShadow, layout, radius, spacing, useThemeColors } from "@/constants/styles";
+import { cardShadow, fonts, glowShadow, radius, spacing, useResponsive, useThemeColors } from "@/constants/styles";
 
 type ProfileHeaderProps = {
 	login: string;
@@ -27,7 +27,8 @@ export default function ProfileHeader({
 	correction_point,
 }: ProfileHeaderProps) {
 	const colors = useThemeColors();
-	const styles = useMemo(() => createStyles(colors), [colors]);
+	const { scale, contentWidth } = useResponsive();
+	const styles = useMemo(() => createStyles(colors, scale, contentWidth), [colors, scale, contentWidth]);
 
 	return (
 		<View style={styles.container}>
@@ -84,7 +85,7 @@ function Divider({ style }: { style: object }) {
 	return <View style={style} />;
 }
 
-function createStyles(colors: ReturnType<typeof useThemeColors>) {
+function createStyles(colors: ReturnType<typeof useThemeColors>, scale: number, contentWidth: number) {
 	return StyleSheet.create({
 		container: {
 			alignItems: "center",
@@ -92,12 +93,12 @@ function createStyles(colors: ReturnType<typeof useThemeColors>) {
 			paddingBottom: spacing.lg,
 			paddingHorizontal: spacing.lg,
 			width: "100%",
-			maxWidth: layout.maxContentWidth,
+			maxWidth: contentWidth,
 			alignSelf: "center",
 		},
 		avatarRing: {
-			width: 116,
-			height: 116,
+			width: 116 * scale,
+			height: 116 * scale,
 			borderRadius: radius.pill,
 			borderWidth: 3,
 			borderColor: colors.accent,
@@ -118,13 +119,13 @@ function createStyles(colors: ReturnType<typeof useThemeColors>) {
 		},
 		avatarFallbackText: {
 			fontFamily: fonts.sans,
-			fontSize: 34,
+			fontSize: 34 * scale,
 			fontWeight: "800",
 			color: colors.textMuted,
 		},
 		login: {
 			fontFamily: fonts.sans,
-			fontSize: 24,
+			fontSize: 24 * scale,
 			fontWeight: "800",
 			color: colors.textPrimary,
 			letterSpacing: -0.3,
@@ -139,7 +140,7 @@ function createStyles(colors: ReturnType<typeof useThemeColors>) {
 		},
 		levelText: {
 			fontFamily: fonts.mono,
-			fontSize: 12,
+			fontSize: 12 * scale,
 			fontWeight: "700",
 			color: colors.accent,
 			letterSpacing: 0.3,
@@ -164,12 +165,12 @@ function createStyles(colors: ReturnType<typeof useThemeColors>) {
 			backgroundColor: colors.border,
 		},
 		infoLabel: {
-			fontSize: 13,
+			fontSize: 13 * scale,
 			color: colors.textMuted,
 		},
 		infoValue: {
 			fontFamily: fonts.mono,
-			fontSize: 14,
+			fontSize: 14 * scale,
 			fontWeight: "600",
 			color: colors.textPrimary,
 		},

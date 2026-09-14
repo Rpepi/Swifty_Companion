@@ -8,14 +8,15 @@ import { z } from "zod";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { tokenStillValid } from "@/lib/auth";
-import { cardShadow, createSharedStyles, fonts, radius, spacing, useThemeColors } from "@/constants/styles";
+import { cardShadow, createSharedStyles, fonts, radius, spacing, useResponsive, useThemeColors } from "@/constants/styles";
 
 export default function Index() {
 	const colors = useThemeColors();
 	const scheme = useColorScheme();
 	const insets = useSafeAreaInsets();
-	const shared = useMemo(() => createSharedStyles(colors), [colors]);
-	const local = useMemo(() => createLocalStyles(colors, insets.top), [colors, insets.top]);
+	const { scale, contentWidth } = useResponsive();
+	const shared = useMemo(() => createSharedStyles(colors, scale, contentWidth), [colors, scale, contentWidth]);
+	const local = useMemo(() => createLocalStyles(colors, insets.top, scale), [colors, insets.top, scale]);
 
 	function toggleTheme() {
 		Appearance.setColorScheme(scheme === "dark" ? "light" : "dark");
@@ -114,7 +115,7 @@ export default function Index() {
 	);
 }
 
-function createLocalStyles(colors: ReturnType<typeof useThemeColors>, topInset: number) {
+function createLocalStyles(colors: ReturnType<typeof useThemeColors>, topInset: number, scale: number) {
 	return StyleSheet.create({
 		outer: {
 			flex: 1,
@@ -127,8 +128,8 @@ function createLocalStyles(colors: ReturnType<typeof useThemeColors>, topInset: 
 			paddingTop: topInset + spacing.sm,
 		},
 		iconButton: {
-			width: 40,
-			height: 40,
+			width: 40 * scale,
+			height: 40 * scale,
 			borderRadius: radius.pill,
 			alignItems: "center",
 			justifyContent: "center",
@@ -146,14 +147,14 @@ function createLocalStyles(colors: ReturnType<typeof useThemeColors>, topInset: 
 		},
 		heading: {
 			fontFamily: fonts.sans,
-			fontSize: 26,
+			fontSize: 26 * scale,
 			fontWeight: "800",
 			color: colors.textPrimary,
 			textAlign: "center",
 			letterSpacing: -0.4,
 		},
 		subheading: {
-			fontSize: 15,
+			fontSize: 15 * scale,
 			color: colors.textMuted,
 			textAlign: "center",
 			marginBottom: spacing.md,
@@ -179,8 +180,8 @@ function createLocalStyles(colors: ReturnType<typeof useThemeColors>, topInset: 
 			opacity: 0.7,
 		},
 		avatar: {
-			width: 60,
-			height: 60,
+			width: 60 * scale,
+			height: 60 * scale,
 			borderRadius: radius.pill,
 			borderWidth: 2,
 			borderColor: colors.accent,
@@ -191,16 +192,16 @@ function createLocalStyles(colors: ReturnType<typeof useThemeColors>, topInset: 
 		},
 		resultLogin: {
 			fontFamily: fonts.mono,
-			fontSize: 16,
+			fontSize: 16 * scale,
 			fontWeight: "700",
 			color: colors.textPrimary,
 		},
 		resultName: {
-			fontSize: 13,
+			fontSize: 13 * scale,
 			color: colors.textMuted,
 		},
 		chevron: {
-			fontSize: 24,
+			fontSize: 24 * scale,
 			fontWeight: "700",
 			color: colors.textFaint,
 		},

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useMemo } from "react";
-import { cardShadow, fonts, layout, radius, spacing, useThemeColors } from "@/constants/styles";
+import { cardShadow, fonts, radius, spacing, useResponsive, useThemeColors } from "@/constants/styles";
 
 // 42's skill levels aren't capped at a documented value, but in practice they
 // plateau well under 20 even for advanced students — used here only to turn
@@ -18,7 +18,8 @@ type SkillsSectionProps = {
 
 export default function SkillsSection({ skills }: SkillsSectionProps) {
 	const colors = useThemeColors();
-	const styles = useMemo(() => createStyles(colors), [colors]);
+	const { scale, contentWidth } = useResponsive();
+	const styles = useMemo(() => createStyles(colors, scale, contentWidth), [colors, scale, contentWidth]);
 
 	const sorted = useMemo(() => [...skills].sort((a, b) => b.level - a.level), [skills]);
 
@@ -70,18 +71,18 @@ function SkillBar({
 	);
 }
 
-function createStyles(colors: ReturnType<typeof useThemeColors>) {
+function createStyles(colors: ReturnType<typeof useThemeColors>, scale: number, contentWidth: number) {
 	return StyleSheet.create({
 		container: {
 			width: "100%",
-			maxWidth: layout.maxContentWidth,
+			maxWidth: contentWidth,
 			alignSelf: "center",
 			paddingHorizontal: spacing.lg,
 			marginTop: spacing.lg,
 		},
 		title: {
 			fontFamily: fonts.mono,
-			fontSize: 13,
+			fontSize: 13 * scale,
 			fontWeight: "700",
 			color: colors.textMuted,
 			textTransform: "uppercase",
@@ -89,7 +90,7 @@ function createStyles(colors: ReturnType<typeof useThemeColors>) {
 			marginBottom: spacing.sm,
 		},
 		empty: {
-			fontSize: 14,
+			fontSize: 14 * scale,
 			color: colors.textFaint,
 		},
 		card: {
@@ -112,13 +113,13 @@ function createStyles(colors: ReturnType<typeof useThemeColors>) {
 		},
 		name: {
 			flexShrink: 1,
-			fontSize: 14,
+			fontSize: 14 * scale,
 			fontWeight: "500",
 			color: colors.textPrimary,
 		},
 		percent: {
 			fontFamily: fonts.mono,
-			fontSize: 13,
+			fontSize: 13 * scale,
 			fontWeight: "700",
 			color: colors.accent,
 		},

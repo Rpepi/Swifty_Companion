@@ -7,11 +7,12 @@ import { z } from "zod";
 import ProfileHeader from "@/components/ProfileHeader";
 import SkillsSection from "@/components/SkillsSection";
 import ProjectsSection from "@/components/ProjectsSection";
-import { createSharedStyles, spacing, useThemeColors } from "@/constants/styles";
+import { createSharedStyles, spacing, useResponsive, useThemeColors } from "@/constants/styles";
 
 export default function UserProfile() {
 	const colors = useThemeColors();
-	const shared = useMemo(() => createSharedStyles(colors), [colors]);
+	const { scale } = useResponsive();
+	const shared = useMemo(() => createSharedStyles(colors, scale), [colors, scale]);
 
 	const { login } = useLocalSearchParams<{ login: string }>();
 	const [loading, setLoading] = useState(false);

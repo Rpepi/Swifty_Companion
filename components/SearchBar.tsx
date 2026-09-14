@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, TextInput } from "react-native";
 import { useMemo } from "react";
-import { createSharedStyles, radius, spacing, useThemeColors } from "@/constants/styles";
+import { createSharedStyles, radius, spacing, useResponsive, useThemeColors } from "@/constants/styles";
 
 type SearchBarProps = {
 	loading: boolean;
@@ -11,8 +11,9 @@ type SearchBarProps = {
 
 export default function SearchBar({ loading, login, setLogin, find_info }: SearchBarProps) {
 	const colors = useThemeColors();
-	const shared = useMemo(() => createSharedStyles(colors), [colors]);
-	const local = useMemo(() => createLocalStyles(colors), [colors]);
+	const { scale } = useResponsive();
+	const shared = useMemo(() => createSharedStyles(colors, scale), [colors, scale]);
+	const local = useMemo(() => createLocalStyles(colors, scale), [colors, scale]);
 
 	const isDisabled = loading || login === "";
 	return (
@@ -40,7 +41,7 @@ export default function SearchBar({ loading, login, setLogin, find_info }: Searc
 	);
 }
 
-function createLocalStyles(colors: ReturnType<typeof useThemeColors>) {
+function createLocalStyles(colors: ReturnType<typeof useThemeColors>, scale: number) {
 	return StyleSheet.create({
 		input: {
 			backgroundColor: colors.surface,
@@ -49,7 +50,7 @@ function createLocalStyles(colors: ReturnType<typeof useThemeColors>) {
 			borderRadius: radius.pill,
 			paddingHorizontal: spacing.lg,
 			paddingVertical: spacing.md,
-			fontSize: 16,
+			fontSize: 16 * scale,
 			color: colors.textPrimary,
 		},
 	});

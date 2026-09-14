@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { makeRedirectUri, ResponseType, useAuthRequest } from "expo-auth-session";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
-import { createSharedStyles, fonts, radius, spacing, useThemeColors } from "@/constants/styles";
+import { createSharedStyles, fonts, radius, spacing, useResponsive, useThemeColors } from "@/constants/styles";
 import { router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { discovery, tokenStillValid  } from "@/lib/auth";
 
 export default function Login() {
 	const colors = useThemeColors();
-	const shared = useMemo(() => createSharedStyles(colors), [colors]);
-	const local = useMemo(() => createLocalStyles(colors), [colors]);
+	const { scale } = useResponsive();
+	const shared = useMemo(() => createSharedStyles(colors, scale), [colors, scale]);
+	const local = useMemo(() => createLocalStyles(colors, scale), [colors, scale]);
 
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -126,7 +127,7 @@ export default function Login() {
 	);
 }
 
-function createLocalStyles(colors: ReturnType<typeof useThemeColors>) {
+function createLocalStyles(colors: ReturnType<typeof useThemeColors>, scale: number) {
 	return StyleSheet.create({
 		mark: {
 			alignItems: "center",
@@ -139,7 +140,7 @@ function createLocalStyles(colors: ReturnType<typeof useThemeColors>) {
 		},
 		wordmark: {
 			fontFamily: fonts.mono,
-			fontSize: 60,
+			fontSize: 60 * scale,
 			fontWeight: "700",
 			color: colors.textPrimary,
 			letterSpacing: -1.5,
@@ -147,26 +148,26 @@ function createLocalStyles(colors: ReturnType<typeof useThemeColors>) {
 		cursor: {
 			position: "absolute",
 			right: -spacing.md,
-			bottom: 10,
-			width: 10,
-			height: 36,
+			bottom: 10 * scale,
+			width: 10 * scale,
+			height: 36 * scale,
 			backgroundColor: colors.accent,
 			borderRadius: 3,
 		},
 		appName: {
 			fontFamily: fonts.sans,
-			fontSize: 17,
+			fontSize: 17 * scale,
 			fontWeight: "700",
 			color: colors.textPrimary,
 			marginBottom: spacing.xs,
 			letterSpacing: -0.2,
 		},
 		tagline: {
-			fontSize: 14,
+			fontSize: 14 * scale,
 			color: colors.textFaint,
 		},
 		button: {
-			minWidth: 240,
+			minWidth: 240 * scale,
 			borderRadius: radius.pill,
 		},
 	});

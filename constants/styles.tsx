@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, useColorScheme, ViewStyle } from "react-native";
+import { Platform, StyleSheet, useColorScheme, useWindowDimensions, ViewStyle } from "react-native";
 
 const palettes = {
 	light: {
@@ -69,10 +69,28 @@ export const radius = {
 
 // Caps content width on large screens (tablets, split-view) so text/cards
 // stay readable instead of stretching edge-to-edge; below this width it's
-// simply 100%, so phones are unaffected.
+// simply 100%, so phones are unaffected. maxContentWidthTablet is the wider
+// cap used once the screen is actually tablet-sized (see useResponsive).
 export const layout = {
 	maxContentWidth: 480,
+	maxContentWidthTablet: 640,
 };
+
+const TABLET_BREAKPOINT = 768;
+const TABLET_FONT_SCALE = 1.2;
+
+// Tablets (iPad, split-view >= 768pt wide) get a slightly larger type scale
+// and a wider content column — without this, screens are just the phone
+// layout stretched into a lot of empty margin with the same small text.
+export function useResponsive() {
+	const { width } = useWindowDimensions();
+	const isTablet = width >= TABLET_BREAKPOINT;
+	return {
+		isTablet,
+		scale: isTablet ? TABLET_FONT_SCALE : 1,
+		contentWidth: isTablet ? layout.maxContentWidthTablet : layout.maxContentWidth,
+	};
+}
 
 export const fonts = {
 	mono: Platform.select({ ios: "Menlo", android: "monospace", default: "Courier New" }),
@@ -109,7 +127,7 @@ export function glowShadow(colors: ThemeColors): ViewStyle {
 	}) as ViewStyle;
 }
 
-export function createSharedStyles(colors: ThemeColors) {
+export function createSharedStyles(colors: ThemeColors, scale = 1, contentWidth: number = layout.maxContentWidth) {
 	return StyleSheet.create({
 		screen: {
 			flex: 1,
@@ -123,24 +141,24 @@ export function createSharedStyles(colors: ThemeColors) {
 		},
 		contentWidth: {
 			width: "100%",
-			maxWidth: layout.maxContentWidth,
+			maxWidth: contentWidth,
 			alignSelf: "center",
 		},
 		title: {
 			fontFamily: fonts.sans,
-			fontSize: 20,
+			fontSize: 20 * scale,
 			fontWeight: "800",
 			color: colors.textPrimary,
 			letterSpacing: -0.3,
 		},
 		subtitle: {
-			fontSize: 15,
+			fontSize: 15 * scale,
 			color: colors.textMuted,
 		},
 		buttonEnabled: {
 			backgroundColor: colors.accent,
-			paddingVertical: spacing.md,
-			paddingHorizontal: spacing.lg,
+			paddingVertical: spacing.md * scale,
+			paddingHorizontal: spacing.lg * scale,
 			borderRadius: radius.pill,
 			alignItems: "center",
 			justifyContent: "center",
@@ -157,7 +175,7 @@ export function createSharedStyles(colors: ThemeColors) {
 		},
 		buttonText: {
 			fontFamily: fonts.sans,
-			fontSize: 15,
+			fontSize: 15 * scale,
 			fontWeight: "700",
 			letterSpacing: 0.4,
 			color: colors.accentOn,
@@ -169,7 +187,7 @@ export function createSharedStyles(colors: ThemeColors) {
 			color: colors.danger,
 			marginTop: spacing.md,
 			textAlign: "center",
-			fontSize: 14,
+			fontSize: 14 * scale,
 			fontWeight: "500",
 		},
 	});

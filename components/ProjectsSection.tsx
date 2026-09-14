@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useMemo } from "react";
-import { cardShadow, fonts, layout, radius, spacing, useThemeColors, ThemeColors } from "@/constants/styles";
+import { cardShadow, fonts, radius, spacing, useResponsive, useThemeColors, ThemeColors } from "@/constants/styles";
 import { z } from "zod";
 import { user42Schema } from "@/types/user42";
 
@@ -12,7 +12,8 @@ type ProjectsSectionProps = {
 
 export default function ProjectsSection({ projects }: ProjectsSectionProps) {
 	const colors = useThemeColors();
-	const styles = useMemo(() => createStyles(colors), [colors]);
+	const { scale, contentWidth } = useResponsive();
+	const styles = useMemo(() => createStyles(colors, scale, contentWidth), [colors, scale, contentWidth]);
 
 	// Finished projects (validated or failed) first; in-progress ones last,
 	// since they don't have a final outcome to show yet.
@@ -97,11 +98,11 @@ function getBadge(status: string, validated: boolean | null, colors: ThemeColors
 	return { label, solid: colors.warning, soft: colors.warningSoft };
 }
 
-function createStyles(colors: ThemeColors) {
+function createStyles(colors: ThemeColors, scale: number, contentWidth: number) {
 	return StyleSheet.create({
 		container: {
 			width: "100%",
-			maxWidth: layout.maxContentWidth,
+			maxWidth: contentWidth,
 			alignSelf: "center",
 			paddingHorizontal: spacing.lg,
 			marginTop: spacing.lg,
@@ -109,7 +110,7 @@ function createStyles(colors: ThemeColors) {
 		},
 		title: {
 			fontFamily: fonts.mono,
-			fontSize: 13,
+			fontSize: 13 * scale,
 			fontWeight: "700",
 			color: colors.textMuted,
 			textTransform: "uppercase",
@@ -117,7 +118,7 @@ function createStyles(colors: ThemeColors) {
 			marginBottom: spacing.sm,
 		},
 		empty: {
-			fontSize: 14,
+			fontSize: 14 * scale,
 			color: colors.textFaint,
 		},
 		card: {
@@ -144,7 +145,7 @@ function createStyles(colors: ThemeColors) {
 			gap: spacing.xs,
 		},
 		name: {
-			fontSize: 14,
+			fontSize: 14 * scale,
 			fontWeight: "600",
 			color: colors.textPrimary,
 		},
@@ -163,13 +164,13 @@ function createStyles(colors: ThemeColors) {
 			borderRadius: radius.pill,
 		},
 		badgeText: {
-			fontSize: 11,
+			fontSize: 11 * scale,
 			fontWeight: "700",
 			letterSpacing: 0.2,
 		},
 		mark: {
 			fontFamily: fonts.mono,
-			fontSize: 17,
+			fontSize: 17 * scale,
 			fontWeight: "700",
 		},
 	});
